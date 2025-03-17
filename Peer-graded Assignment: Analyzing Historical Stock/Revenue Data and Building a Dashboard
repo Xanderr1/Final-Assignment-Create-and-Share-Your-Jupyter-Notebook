@@ -1,0 +1,193 @@
+
+# Create a Ticker object for Tesla (TSLA)
+tesla_ticker = yf.Ticker("TSLA")
+
+# Get historical market data
+tesla_stock_data = tesla_ticker.history(period="max")
+# Reset index to make Date a column
+tesla_stock_data.reset_index(inplace=True)
+
+# Display the first few rows
+print(tesla_stock_data.head())
+# URL of the Tesla revenue data
+url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm"
+
+# Send an HTTP GET request to the URL
+response = requests.get(url)
+
+# Save the HTML content in a variable
+html_data = response.text
+
+# Print the first 500 characters to verify
+print(html_data[:500])
+# Parse the HTML content using BeautifulSoup
+soup = BeautifulSoup(html_data, "html.parser")  # or use "html5lib"
+tesla_revenue = pd.DataFrame(columns=["Date", "Revenue"])
+
+# Locate all tables in the HTML
+tables = soup.find_all("table")
+
+# Identify the correct table (Tesla Quarterly Revenue Table is at index 1)
+tesla_table = tables[1]  # Second table (index 1)
+
+# Find the tbody section (table body)
+table_body = tesla_table.find("tbody")
+
+# Create a list to store row data
+data = []
+
+# Loop through each row in the tbody
+for row in table_body.find_all("tr"):
+    cols = row.find_all("td")  # Extract columns
+    date = cols[0].text.strip()  # Get date
+    revenue = cols[1].text.strip()  # Get revenue
+    data.append([date, revenue])  # Append row data to the list
+
+# Convert list into a DataFrame
+tesla_revenue = pd.DataFrame(data, columns=["Date", "Revenue"])
+
+# Display the first few rows
+print(tesla_revenue.head())
+tesla_revenue["Revenue"] = tesla_revenue['Revenue'].str.replace(',|\$',"")
+tesla_revenue.dropna(inplace=True)
+
+tesla_revenue = tesla_revenue[tesla_revenue['Revenue'] != ""]
+
+
+print(tesla_revenue.tail())
+
+# Create a Ticker object for GameStop (GME)
+gme_ticker = yf.Ticker("GME")
+# Extract stock information and save it in a DataFrame
+gme_data = gme_ticker.history(period="max")  # Get data for the maximum available time
+
+# Reset index to make Date a column
+gme_data.reset_index(inplace=True)
+# Define the URL for GameStop revenue data
+url_gme = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html"
+
+#Send a GET request to fetch the webpage
+response = requests.get(url_gme)
+
+#Save the HTML content as a variable
+html_data_2 = response.text
+
+#Parse the HTML content using BeautifulSoup
+soup_gme = BeautifulSoup(html_data_2, "html.parser")  # or use "html5lib"
+
+# Step 1: Parse the HTML content using BeautifulSoup
+soup_gme = BeautifulSoup(html_data_2, "html.parser")  # or "html5lib"
+
+# Step 2: Locate the second table (index 1)
+tables = soup_gme.find_all("table")
+gme_table = tables[1]  # Extract the correct table
+
+# Step 3: Find the tbody section (table body)
+table_body = gme_table.find("tbody")
+
+# Step 4: Create an empty list to store row data
+data = []
+
+# Step 5: Loop through each row in the tbody
+for row in table_body.find_all("tr"):
+    cols = row.find_all("td")  # Extract columns
+    date = cols[0].text.strip()  # Extract Date
+    revenue = cols[1].text.strip()  # Extract Revenue
+    data.append([date, revenue])  # Append to list
+
+# Step 6: Convert list to DataFrame
+gme_revenue = pd.DataFrame(data, columns=["Date", "Revenue"])
+
+# Step 7: Clean the Revenue column (Remove dollar signs and commas)
+gme_revenue["Revenue"] = gme_revenue["Revenue"].str.replace(',|\$', "", regex=True)
+
+# Step 8: Remove null or empty rows
+gme_revenue.dropna(inplace=True)
+gme_revenue = gme_revenue[gme_revenue["Revenue"] != ""]
+
+# Step 9: Display the cleaned DataFrame
+print(gme_revenue.head())  # Show first 5 rows
+
+import yfinance as yf
+import pandas as pd
+
+# Fetch Tesla stock data
+tesla_ticker = yf.Ticker("TSLA")
+tesla_data = tesla_ticker.history(period="max")
+
+# Reset index to make Date a column
+tesla_data.reset_index(inplace=True)
+
+# Display first few rows
+print(tesla_data.head())
+import requests
+from bs4 import BeautifulSoup
+
+# Fetch Tesla revenue data
+url_tesla = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm"
+response = requests.get(url_tesla)
+html_data = response.text
+
+# Parse the HTML
+soup_tesla = BeautifulSoup(html_data, "html.parser")
+
+# Find the revenue table (index 1)
+tables = soup_tesla.find_all("table")
+tesla_table = tables[1]
+
+# Extract data into a DataFrame
+data = []
+for row in tesla_table.find("tbody").find_all("tr"):
+    cols = row.find_all("td")
+    date = cols[0].text.strip()
+    revenue = cols[1].text.strip()
+    data.append([date, revenue])
+
+# Convert list to DataFrame
+tesla_revenue = pd.DataFrame(data, columns=["Date", "Revenue"])
+
+# Clean Revenue column
+tesla_revenue["Revenue"] = tesla_revenue["Revenue"].str.replace(',|\$', "", regex=True)
+tesla_revenue.dropna(inplace=True)
+tesla_revenue = tesla_revenue[tesla_revenue["Revenue"] != ""]
+
+# Display first few rows
+print(tesla_revenue.head())
+# Plot Tesla stock and revenue data
+make_graph(tesla_data, tesla_revenue, "Tesla")
+import requests
+from bs4 import BeautifulSoup
+
+# Fetch GameStop revenue data
+url_gme = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html"
+response = requests.get(url_gme)
+html_data_2 = response.text
+
+# Parse the HTML
+soup_gme = BeautifulSoup(html_data_2, "html.parser")
+
+# Find the revenue table (index 1)
+tables = soup_gme.find_all("table")
+gme_table = tables[1]
+
+# Extract data into a DataFrame
+data = []
+for row in gme_table.find("tbody").find_all("tr"):
+    cols = row.find_all("td")
+    date = cols[0].text.strip()
+    revenue = cols[1].text.strip()
+    data.append([date, revenue])
+
+# Convert list to DataFrame
+gme_revenue = pd.DataFrame(data, columns=["Date", "Revenue"])
+
+# Clean Revenue column
+gme_revenue["Revenue"] = gme_revenue["Revenue"].str.replace(',|\$', "", regex=True)
+gme_revenue.dropna(inplace=True)
+gme_revenue = gme_revenue[gme_revenue["Revenue"] != ""]
+
+# Display first few rows
+print(gme_revenue.head())
+
+# Plot GameStop stock and revenue data
+make_graph(gme_data, gme_revenue, "GameStop")
