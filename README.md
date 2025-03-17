@@ -1,1 +1,1 @@
-this is myt pythjon project for IBM DATA SCIENCE CERTIFICATE
+this is my python project for IBM DATA SCIENCE CERTIFICATE
